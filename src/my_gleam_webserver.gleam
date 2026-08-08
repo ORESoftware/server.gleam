@@ -13,3 +13,7 @@ pub fn hello_world(_request: Request(BitString)) -> Response(BitBuilder) {
 pub fn start() {
   cowboy.start(hello_world, on_port: 8080)
 }
+
+pub fn main() {
+  start()
+}
