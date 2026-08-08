@@ -3,21 +3,46 @@ name: test
 on:
   push:
     branches:
-      - master
       - main
+      - "agent/**"
   pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v3
-      - uses: erlef/setup-beam@v1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          show-progress: false
+          submodules: false
+
+      - name: Install Erlang, Gleam, and Rebar3
+        uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1
         with:
           otp-version: "26.0.2"
-          gleam-version: "0.33.0"
+          gleam-version: "1.14.0"
           rebar3-version: "3"
-          # elixir-version: "1.15.4"
-      - run: gleam deps download
-      - run: gleam test
-      - run: gleam format --check src test
+
+      - name: Download locked dependencies
+        run: gleam deps download
+
+      - name: Verify Gleam formatting
+        run: gleam format --check src test
+
+      - name: Compile and test the Gleam application
+        run: gleam test
+
+      - name: Verify terminal shutdown launcher
+        run: |
+          bash -n bin/graceful-beam-launcher
+          python3 test/graceful_beam_launcher_test.py
