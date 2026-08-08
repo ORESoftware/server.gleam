@@ -1,22 +1,33 @@
 # my_gleam_webserver
 
-[![Package Version](https://img.shields.io/hexpm/v/my_gleam_webserver)](https://hex.pm/packages/my_gleam_webserver)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/my_gleam_webserver/)
+A small Gleam/Cowboy HTTP server that runs under OTP application supervision.
 
-## Quick start
+## Run the server
 
-```sh
-gleam run   # Run the project
-gleam test  # Run the tests
-gleam shell # Run an Erlang shell
-```
-
-## Installation
-
-If available on Hex this package can be added to your Gleam project:
+Use the launcher for development and production entrypoints on Unix-like systems:
 
 ```sh
-gleam add my_gleam_webserver
+bash bin/graceful-beam-launcher gleam run
 ```
 
-and its documentation can be found at <https://hexdocs.pm/my_gleam_webserver>.
+`SHUTDOWN_GRACE_MS` controls the bounded drain period and defaults to 30,000 ms.
+
+The shutdown policy is:
+
+- `SIGTERM` starts OTP's orderly application shutdown immediately. One signal is sufficient.
+- A first interactive `SIGINT` starts the same graceful shutdown and logs that force shutdown is available.
+- While draining after an interactive `SIGINT`, a second `SIGINT` or terminal EOF (`Ctrl-D` on an empty line) force-stops the BEAM process group.
+- When stdin is not a TTY, one `SIGINT` or `SIGTERM` is sufficient; the grace deadline remains the automatic force fallback.
+- The OTP application callback logs application drain and completion while the launcher logs signal, TTY, deadline, and force transitions.
+
+The launcher is intentionally outside the BEAM VM because OTP handles `SIGTERM` as an orderly VM stop but does not expose terminal `SIGINT` through the normal Erlang signal-subscription API.
+
+## Development
+
+```sh
+gleam deps download
+gleam test
+gleam format --check src test
+bash -n bin/graceful-beam-launcher
+python3 test/graceful_beam_launcher_test.py
+```
