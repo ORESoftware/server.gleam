@@ -1,13 +1,15 @@
-import gleam/bit_builder.{BitBuilder}
-import gleam/http.{Request, Response}
+import gleam/bytes_tree.{type BytesTree}
+import gleam/erlang/process
 import gleam/http/cowboy
+import gleam/http/request.{type Request}
+import gleam/http/response.{type Response}
 
-pub fn hello_world(_request: Request(BitString)) -> Response(BitBuilder) {
-  let body = bit_builder.from_string("Hello, Gleam!\n")
+pub fn hello_world(_request: Request(t)) -> Response(BytesTree) {
+  let body = bytes_tree.from_string("Hello, Gleam!\n")
 
-  http.response(200)
-  |> http.prepend_resp_header("content-type", "text/plain; charset=utf-8")
-  |> http.set_resp_body(body)
+  response.new(200)
+  |> response.prepend_header("content-type", "text/plain; charset=utf-8")
+  |> response.set_body(body)
 }
 
 pub fn start() {
@@ -15,5 +17,6 @@ pub fn start() {
 }
 
 pub fn main() {
-  start()
+  let assert Ok(_) = start()
+  process.sleep_forever()
 }
