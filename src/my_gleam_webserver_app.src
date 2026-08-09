@@ -1,11 +1,14 @@
 {application, my_gleam_webserver,
- [{description, "A simple Gleam webserver"},
-  {vsn, "0.1.0"},
+ [{description, "A Gleam/Cowboy HTTP server with graceful shutdown"},
+  {vsn, "1.0.0"},
   {applications,
    [kernel,
     stdlib,
     cowboy,
-    gleam_http
+    gleam_stdlib,
+    gleam_erlang,
+    gleam_http,
+    gleam_cowboy
    ]},
   {mod, {my_gleam_webserver_app, []}},
   {env, []}
