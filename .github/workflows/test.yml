@@ -39,8 +39,21 @@ jobs:
       - name: Download dependencies
         run: gleam deps download
 
+      - name: Produce canonical Gleam formatting patch
+        run: |
+          gleam format src test
+          git diff -- src test > gleam-format.patch
+
+      - name: Retain canonical formatting patch
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: server-gleam-format-${{ github.sha }}
+          path: gleam-format.patch
+          if-no-files-found: error
+
       - name: Verify Gleam formatting
-        run: gleam format --check src test
+        run: test ! -s gleam-format.patch
 
       - name: Compile and test the Gleam application
         run: gleam test
