@@ -1,7 +1,7 @@
 name = "my_gleam_webserver"
 version = "1.0.0"
 target = "erlang"
-gleam = ">= 1.7.0"
+gleam = ">= 1.18.0"
 
 description = "A Gleam/Cowboy HTTP server with OTP-aware graceful shutdown"
 licences = ["Apache-2.0"]
