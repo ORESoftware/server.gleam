@@ -31,10 +31,12 @@ jobs:
         uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # v1
         with:
           otp-version: "27.3.4.14"
-          gleam-version: "1.14.0"
+          # Gleam 1.18 added git dependency subdirectory support, which is
+          # required by ores_middleware = { git = ..., path = "src/gleam" }.
+          gleam-version: "1.18.0"
           rebar3-version: "3"
 
-      - name: Download locked dependencies
+      - name: Download dependencies
         run: gleam deps download
 
       - name: Verify Gleam formatting
