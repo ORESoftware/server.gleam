@@ -1,7 +1,7 @@
 name = "my_gleam_webserver"
 version = "1.0.0"
 target = "erlang"
-gleam = ">= 1.7.0"
+gleam = ">= 1.18.0"
 
 description = "A Gleam/Cowboy HTTP server with OTP-aware graceful shutdown"
 licences = ["Apache-2.0"]
@@ -12,6 +12,7 @@ gleam_stdlib = ">= 0.45.0 and < 2.0.0"
 gleam_erlang = ">= 1.0.0 and < 2.0.0"
 gleam_http = ">= 4.0.0 and < 5.0.0"
 gleam_cowboy = ">= 1.1.0 and < 2.0.0"
+ores_middleware = { git = "https://github.com/ORESoftware/ores-middleware.git", ref = "88f41bc2d55f94dae03dd392800cc740bdc49480", path = "src/gleam" }
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
