@@ -19,30 +19,33 @@ fn add_middleware_header(
 
 pub fn hello_world(_request: Request(t)) -> Response(BytesTree) {
   let config = ores_middleware.default_config("my-gleam-webserver")
-  let config = ores_middleware.Config(
-    ..config,
-    require_https: False,
-    rate_limit_enabled: False,
-  )
+  let config =
+    ores_middleware.Config(
+      ..config,
+      require_https: False,
+      rate_limit_enabled: False,
+    )
   let assert Ok(middleware) =
     ores_middleware.create_middleware(config, ores_middleware.default_hooks())
-  let middleware_request = ores_middleware.Request(
-    method: "GET",
-    path: "/",
-    scheme: "http",
-    headers: dict.new(),
-    body_size: 0,
-    remote_ip: "",
-  )
-  let middleware_response = middleware(middleware_request, fn(_) {
-    ores_middleware.Response(
-      status: 200,
-      headers: dict.from_list([
-        #("content-type", "text/plain; charset=utf-8"),
-      ]),
-      body: "Hello, Gleam!\n",
+  let middleware_request =
+    ores_middleware.Request(
+      method: "GET",
+      path: "/",
+      scheme: "http",
+      headers: dict.new(),
+      body_size: 0,
+      remote_ip: "",
     )
-  })
+  let middleware_response =
+    middleware(middleware_request, fn(_) {
+      ores_middleware.Response(
+        status: 200,
+        headers: dict.from_list([
+          #("content-type", "text/plain; charset=utf-8"),
+        ]),
+        body: "Hello, Gleam!\n",
+      )
+    })
   let ores_middleware.Response(status, headers, body) = middleware_response
 
   response.new(status)
