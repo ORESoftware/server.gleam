@@ -9,3 +9,6 @@ pkg
 *.log
 tmp/
 temp/
+
+# machine-local symlink to ORESoftware/my-ai AGENTS.md; never committed
+.ores/
